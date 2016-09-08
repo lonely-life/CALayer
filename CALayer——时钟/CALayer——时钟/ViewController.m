@@ -8,23 +8,17 @@
 
 #import "ViewController.h"
 
+#define HourAnlge   M_PI * 2 / 12.0 // 每小时旋转的弧度
+#define MinuteAnlge M_PI * 2 / 60.0 // 每分钟旋转的弧度
+#define SecondAngle M_PI * 2 / 60.0 // 每秒旋转的弧度
+
 @interface ViewController ()
-{
 
-    //时、分、秒三个帧数的图片设定
-    CALayer *layer_1;
-    CALayer *layer_2;
-    CALayer *layer_3;
-    
-    //时间转换和幅度调换
-    NSInteger a;
-    NSInteger b;
-
-    
-}
-
-@property(strong,nonatomic)NSDateComponents *comps;
-
+@property (weak, nonatomic) IBOutlet UIImageView *hourImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *minuteImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *secondImageView;
+@property (strong, nonatomic)NSDateComponents *dateComponents;
+@property (strong, nonatomic)NSCalendar *calendar;
 
 @end
 
@@ -32,90 +26,44 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self Timer];
     
-    CALayer *layer = [[CALayer alloc] init];
-    layer.frame = CGRectMake(0, 0, 400, 400);
-    layer.position = self.view.center;
-    [self.view.layer addSublayer:layer];
-    layer.contents = (__bridge id _Nullable)([UIImage imageNamed:@"dial"].CGImage);
+    [self setTimeViews];
+    [self setTimeAngle];
     
-    
-    layer_1 = [[CALayer alloc] init];
-    layer_1.frame = CGRectMake(0, 0, 20, 150);
-    layer_1.anchorPoint = CGPointMake(0.5, 1);
-    [self.view.layer addSublayer:layer_1];
-    layer_1.contents = (__bridge id _Nullable)([UIImage imageNamed:@"secondHand"].CGImage);
-    layer_1.position = self.view.center;
-    
-    layer_2 = [[CALayer alloc] init];
-    layer_2.frame = CGRectMake(0, 0, 20, 150);
-    layer_2.anchorPoint = CGPointMake(0.5, 1);
-    [self.view.layer addSublayer:layer_2];
-    layer_2.contents = (__bridge id _Nullable)([UIImage imageNamed:@"minuteHand"].CGImage);
-    layer_2.position = self.view.center;
-    
-    layer_3 = [[CALayer alloc] init];
-    layer_3.frame = CGRectMake(0, 0, 20, 150);
-    layer_3.anchorPoint = CGPointMake(0.5, 1);
-    [self.view.layer addSublayer:layer_3];
-    layer_3.contents = (__bridge id _Nullable)([UIImage imageNamed:@"hourHand"].CGImage);
-    layer_3.position = self.view.center;
-    
-    
-    
-    layer_1.transform = CATransform3DRotate(layer_1.transform, (M_PI/30)*self.comps.second, 0, 0, 1);
-    layer_2.transform = CATransform3DRotate(layer_2.transform, (M_PI/30)*self.comps.minute, 0, 0, 1);
-    layer_3.transform = CATransform3DRotate(layer_3.transform, (M_PI/6)*self.comps.hour, 0, 0, 1);
-    
-    //时间计数
-    a = self.comps.second;
-    b = self.comps.minute;
-    layer_3.transform = CATransform3DRotate(layer_3.transform, (M_PI/360)*b, 0, 0, 1);
-    
-    //定时器的设定
-    [NSTimer  scheduledTimerWithTimeInterval:1
-                                      target:self
-                                    selector:@selector(toMedicine:)
-                                    userInfo:nil
-                                     repeats:YES];
-
-    
-    
+    [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(setTimeAngle) userInfo:nil repeats:YES];
 }
 
+#pragma mark - 设置旋转锚点
+- (void)setTimeViews
+{
+    self.hourImageView.layer.anchorPoint = CGPointMake(0.5, 0.88);
+    self.minuteImageView.layer.anchorPoint = CGPointMake(0.5, 0.88);
+    self.secondImageView.layer.anchorPoint = CGPointMake(0.5, 0.88);
+}
 
-//计算时、分、秒针的旋转幅度
--(void)toMedicine:(NSTimer *) timer{
+#pragma mark - 设置时刻的旋转角度
+- (void)setTimeAngle
+{
+    float minuteAngle = self.dateComponents.minute * MinuteAnlge;
+    float secondAngle = self.dateComponents.second * SecondAngle;
+    float hourAngle = self.dateComponents.hour * HourAnlge;
+    hourAngle += self.dateComponents.minute  * (M_PI / 6.0) / 60.0;
+    
+    self.hourImageView.layer.transform = CATransform3DMakeRotation(hourAngle, 0, 0, 1);
+    self.minuteImageView.layer.transform = CATransform3DMakeRotation(minuteAngle, 0, 0, 1);
+    self.secondImageView.layer.transform = CATransform3DMakeRotation(secondAngle, 0, 0, 1);
+}
 
-    a++;
-    if (a == 60) {
-        a = 0;
+#pragma mark - 获取时间组成部分
+- (NSDateComponents *)dateComponents
+{
+    if (!_calendar) {
+        // 日历类，用于获取对应的日期
+        _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierChinese];
     }
-    layer_1.transform = CATransform3DRotate(layer_1.transform, (M_PI/30), 0, 0, 1);
-    if (a == 0) {
-        layer_3.transform = CATransform3DRotate(layer_3.transform, (M_PI/360), 0, 0, 1);
-        
-        layer_2.transform = CATransform3DRotate(layer_2.transform, (M_PI/30), 0, 0, 1);
-        if (b == 60) {
-            b = 0;
-        }
-    }
-
-
-}
-
-
-//获取当前时间
--(void)Timer{
-    NSCalendar * calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    // 指定日历的算法 NSCalendarIdentifierGregorian,NSGregorianCalendar
+    // 获取日期的组成部分
+    _dateComponents = [_calendar components:NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond  fromDate:[NSDate date]];
     
-    // NSDateComponent 可以获得日期的详细信息，即日期的组成
-    self.comps = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit|NSWeekCalendarUnit|NSWeekdayCalendarUnit fromDate:[NSDate date]];
-    
-
-
+    return _dateComponents;
 }
-
 @end
