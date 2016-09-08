@@ -29,6 +29,8 @@
     //设置VIew上的背景颜色
     view.backgroundColor = [UIColor redColor];
     
+    [self.view addSubview:view];
+    
 /*
  注意：
     以下的信息不是只有CALayer才能设置的，VIew上也可以自己直接设置，但是VIew其实还是基于CALayer上搭建起来的视图，只是这个视图层上是可以添加触发事件的

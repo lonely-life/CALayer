@@ -24,6 +24,7 @@
     // layer.frame = CGRectMake(0, 100, 350, 200);
     layer.backgroundColor = [UIColor orangeColor].CGColor;
     
+    
     // 1、bounds： 尺寸
     layer.bounds = CGRectMake(0, 0, 200, 200);
     // 2、position: 定位点

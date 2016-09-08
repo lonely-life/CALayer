@@ -1,8 +1,8 @@
 //
 //  ViewController.h
-//  03、CALayer—3D转换
+//  CALayer——时钟
 //
-//  Created by tens04 on 16/8/24.
+//  Created by tens04 on 16/8/25.
 //  Copyright © 2016年 tens. All rights reserved.
 //
 
@@ -12,6 +12,4 @@
 
 
 @end
-
-
 

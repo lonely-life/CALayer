@@ -77,11 +77,9 @@
 // 3D变换
 - (void)transform {
     
-    // 1、通过函数设置transform
+    // 1、通过函数设置transform       
     layer.transform = CATransform3DTranslate(layer.transform, 0, 0, 100);
-    
     layer.transform = CATransform3DScale(layer.transform, 1, 1, 1.5);
-    //
     layer.transform = CATransform3DRotate(layer.transform, M_PI_4, 0, 0, 1);
     
     
@@ -90,14 +88,14 @@
     
     // 2、通过 KVC 设置transform
     //
-    //    [layer setValue:@2 forKeyPath:@"transform.scale.x"];
-    //    [layer setValue:@2 forKeyPath:@"transform.scale"];
-    //
-    //    [layer setValue:@100 forKeyPath:@"transform.translation"];
-    //    [layer setValue:@100 forKeyPath:@"transform.translation.x"];
-    //
-    //    [layer setValue:@M_PI_4 forKeyPath:@"transform.rotation"];
-    //    [layer setValue:@M_PI_4 forKeyPath:@"transform.rotation.x"];
+//        [layer setValue:@2 forKeyPath:@"transform.scale.x"];
+//        [layer setValue:@2 forKeyPath:@"transform.scale"];
+//    
+//        [layer setValue:@100 forKeyPath:@"transform.translation"];
+//        [layer setValue:@100 forKeyPath:@"transform.translation.x"];
+//    
+//        [layer setValue:@M_PI_4 forKeyPath:@"transform.rotation"];
+//        [layer setValue:@M_PI_4 forKeyPath:@"transform.rotation.x"];
 }
 
 
